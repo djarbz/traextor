@@ -14,11 +14,12 @@ import (
 )
 
 // New will give you a blank ACME store
-func New() *acme {
-	return new(acme)
+func New() *Acme {
+	return new(Acme)
 }
 
-type acme struct {
+// Acme is a ACME certificate store
+type Acme struct {
 	Account        acmeAccount        `json:"Account,omitempty"`
 	Certificates   []acmeCertificate  `json:"Certificates,omitempty"`
 	HTTPChallenges acmeHTTPChallenges `json:"HTTPChallenges,omitempty"`
@@ -32,7 +33,7 @@ type acmeAccount struct {
 
 type acmeAccountRegistration struct {
 	Body acmeAccountRegistrationBody `json:"body,omitempty"`
-	Uri  string                      `json:"uri,omitempty"`
+	URI  string                      `json:"uri,omitempty"`
 }
 
 type acmeAccountRegistrationBody struct {
@@ -55,7 +56,7 @@ type acmeHTTPChallenges struct {
 }
 
 // LoadFromFile will populate the ACME store from a JSON file
-func (a *acme) LoadFromFile(file string) error {
+func (a *Acme) LoadFromFile(file string) error {
 	// Check file is accessible
 	if !internal.CheckFileExists(file) {
 		return fmt.Errorf("acme file does not exist: %s", file)
@@ -76,7 +77,7 @@ func (a *acme) LoadFromFile(file string) error {
 }
 
 // LoadJSON will populate the ACME store from a JSON reader
-func (a *acme) LoadJSON(input io.Reader) error {
+func (a *Acme) LoadJSON(input io.Reader) error {
 	byteValue, err := ioutil.ReadAll(input)
 	if err != nil {
 		return err
@@ -88,7 +89,7 @@ func (a *acme) LoadJSON(input io.Reader) error {
 }
 
 // Generate will process every certificate in the store and output to file
-func (a *acme) Generate(outDir string) error {
+func (a *Acme) Generate(outDir string) error {
 	for _, cert := range a.Certificates {
 		if err := cert.generate(outDir); err != nil {
 			return err
@@ -99,7 +100,7 @@ func (a *acme) Generate(outDir string) error {
 }
 
 // Watch will reload the given file when it changes and reexport certificates
-func (a *acme) Watch(file string, outDir string) {
+func (a *Acme) Watch(file string, outDir string) {
 	// creates a new file watcher
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
