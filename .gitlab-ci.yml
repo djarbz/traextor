@@ -1,0 +1,72 @@
+image: golang:1.11
+
+#cache:
+#  paths:
+#    - /apt-cache
+#    - /go/src/github.com
+#    #    - /go/src/gitlab.com
+#    - /go/src/golang.org
+#    - /go/src/google.golang.org
+#    - /go/src/gopkg.in
+#    - /go/pkg
+
+stages:
+  - test
+  - compile
+#  - build
+
+before_script:
+  #  - mkdir -p /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds
+  #  - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/$CI_PROJECT_PATH
+  #  - ln -s /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds/$CI_PROJECT_NAMESPACE
+  - go mod tidy
+  - go get -u golang.org/x/lint/golint
+
+unit_tests:
+  stage: test
+  script:
+    - go test -short ./...
+
+race_detector:
+  stage: test
+  script:
+    - go test -race -short ./...
+
+#memory_sanitizer:
+#  stage: test
+#  script:
+#    - go test -msan -short ./...
+
+#code_coverage:
+#  stage: test
+#  script:
+#    - for package in $(go list ./...); do
+#      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
+#      done
+#    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
+#    - go tool cover -func=cover/coverage.cov
+
+#code_coverage_report:
+#  stage: test
+#  script:
+#    - for package in $(go list ./...); do
+#      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
+#      done
+#    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
+#    - go tool cover -func=cover/coverage.cov
+#    - go tool cover -html=cover/coverage.cov -o coverage.html
+#  only:
+#    - master
+
+lint_code:
+  stage: test
+  script:
+    - golint -set_exit_status ./...
+
+build:
+  stage: compile
+  script:
+    - go build -o bin/$CI_PROJECT_NAME -v .
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/bin/$CI_PROJECT_NAME
