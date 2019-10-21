@@ -1,14 +1,14 @@
 image: golang:1.11
 
-cache:
-  paths:
-    - /apt-cache
-    - /go/src/github.com
-    #    - /go/src/gitlab.com
-    - /go/src/golang.org
-    - /go/src/google.golang.org
-    - /go/src/gopkg.in
-    - /go/pkg
+#cache:
+#  paths:
+#    - /apt-cache
+#    - /go/src/github.com
+#    #    - /go/src/gitlab.com
+#    - /go/src/golang.org
+#    - /go/src/google.golang.org
+#    - /go/src/gopkg.in
+#    - /go/pkg
 
 stages:
   - test
@@ -67,10 +67,11 @@ build:
   stage: compile
   script:
     - pwd
-    - go build -o /build/$CI_PROJECT_NAME -v . #gitlab.com/$CI_PROJECT_PATH
+    - go build -o bin/$CI_PROJECT_NAME -v . #gitlab.com/$CI_PROJECT_PATH
     - ls
-    - ls /build/$CI_PROJECT_NAME
+    - ls bin/$CI_PROJECT_NAME
   artifacts:
     paths:
       - /build/
-      - CI_PROJECT_DIR
+      - $CI_PROJECT_DIR
+      - CI_PROJECT_DIR/bin/$CI_PROJECT_NAME
