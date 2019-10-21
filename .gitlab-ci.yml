@@ -67,7 +67,7 @@ build:
   stage: compile
   script:
     - pwd
-    - go build -o /build/$CI_PROJECT_NAME -v gitlab.com/$CI_PROJECT_PATH
+    - go build -o /build/$CI_PROJECT_NAME -v . #gitlab.com/$CI_PROJECT_PATH
     - ls /build/$CI_PROJECT_NAME
   artifacts:
     paths:
