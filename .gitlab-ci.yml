@@ -69,4 +69,4 @@ build:
     - go build -o /build/$CI_PROJECT_NAME -i -v gitlab.com/$CI_PROJECT_PATH
   artifacts:
     paths:
-      - /build/$CI_PROJECT_NAME
+      - /build/
