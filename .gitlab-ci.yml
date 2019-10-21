@@ -66,7 +66,7 @@ lint_code:
 build:
   stage: compile
   script:
-    - go build -i -v gitlab.com/$CI_PROJECT_NAMESPACE -o /build/$CI_PROJECT_NAME
+    - go build -o /build/$CI_PROJECT_NAME -i -v gitlab.com/$CI_PROJECT_NAMESPACE
   artifacts:
     paths:
       - /build/$CI_PROJECT_NAME
