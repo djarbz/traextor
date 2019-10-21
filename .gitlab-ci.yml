@@ -32,31 +32,31 @@ race_detector:
   script:
     - go test -race -short ./...
 
-memory_sanitizer:
-  stage: test
-  script:
-    - go test -msan -short ./...
+#memory_sanitizer:
+#  stage: test
+#  script:
+#    - go test -msan -short ./...
 
-code_coverage:
-  stage: test
-  script:
-    - for package in $(go list ./...); do
-      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
-      done
-    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
-    - go tool cover -func=cover/coverage.cov
+#code_coverage:
+#  stage: test
+#  script:
+#    - for package in $(go list ./...); do
+#      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
+#      done
+#    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
+#    - go tool cover -func=cover/coverage.cov
 
-code_coverage_report:
-  stage: test
-  script:
-    - for package in $(go list ./...); do
-      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
-      done
-    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
-    - go tool cover -func=cover/coverage.cov
-    - go tool cover -html=cover/coverage.cov -o coverage.html
-  only:
-    - master
+#code_coverage_report:
+#  stage: test
+#  script:
+#    - for package in $(go list ./...); do
+#      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
+#      done
+#    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
+#    - go tool cover -func=cover/coverage.cov
+#    - go tool cover -html=cover/coverage.cov -o coverage.html
+#  only:
+#    - master
 
 lint_code:
   stage: test
