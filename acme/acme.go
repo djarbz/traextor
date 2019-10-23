@@ -85,11 +85,13 @@ func (a *Acme) LoadJSON(input io.Reader) error {
 	if err := json.Unmarshal(byteValue, a); err != nil {
 		return err
 	}
+	internal.Log("Loaded ACME store!")
 	return nil
 }
 
 // Generate will process every certificate in the store and output to file
 func (a *Acme) Generate(outDir string) error {
+	internal.Log(fmt.Sprintf("Generating certificates for %d domains", len(a.Certificates)))
 	for _, cert := range a.Certificates {
 		if err := cert.generate(outDir); err != nil {
 			return err
@@ -138,6 +140,8 @@ func (a *Acme) Watch(file string, outDir string) {
 		internal.Log(fmt.Sprintf("Failed to add %s to watcher: %v", file, err))
 		os.Exit(1)
 	}
+
+	internal.Log("Watching: " + file)
 
 	<-done
 }
