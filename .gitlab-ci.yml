@@ -66,12 +66,7 @@ lint_code:
 build:
   stage: compile
   script:
-    - pwd
-    - go build -o bin/$CI_PROJECT_NAME -v . #gitlab.com/$CI_PROJECT_PATH
-    - ls
-    - ls bin/$CI_PROJECT_NAME
+    - go build -o bin/$CI_PROJECT_NAME -v .
   artifacts:
     paths:
-      - /build/
-      - $CI_PROJECT_DIR
-      - CI_PROJECT_DIR/bin/$CI_PROJECT_NAME
+      - $CI_PROJECT_DIR/bin/$CI_PROJECT_NAME
