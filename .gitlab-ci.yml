@@ -13,7 +13,7 @@ image: golang:1.11
 stages:
   - test
   - compile
-#  - build
+  - build
 
 before_script:
   #  - mkdir -p /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds
@@ -63,10 +63,25 @@ lint_code:
   script:
     - golint -set_exit_status ./...
 
-build:
+compile:
   stage: compile
   script:
     - go build -o bin/$CI_PROJECT_NAME -v .
   artifacts:
     paths:
       - $CI_PROJECT_DIR/bin/$CI_PROJECT_NAME
+
+build_image:
+  stage: build
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker run -e BUILD_TEST="TRUE" $CI_PROJECT_NAME
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - master

@@ -21,6 +21,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	if internal.GetEnv("BUILD_TEST", "") != "" {
+		internal.Log("Dockerfile is running.")
+		internal.Log("ACME is: " + acmeFile)
+		internal.Log("Output directory is: " + outputDir)
+		os.Exit(0)
+	}
+
 	// Create a new ACME store
 	ACME := acme.New()
 
