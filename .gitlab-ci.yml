@@ -1,5 +1,12 @@
 image: golang:1.11
 
+# This is NOT a job and will be ignored by GitLab-CI
+.golang_before_script: &goBeforeScript  # This is an anchor
+  before_script:
+    - go mod tidy
+    - go get -u golang.org/x/lint/golint
+
+
 #cache:
 #  paths:
 #    - /apt-cache
@@ -22,23 +29,27 @@ before_script:
   - go mod tidy
   - go get -u golang.org/x/lint/golint
 
-unit_tests:
+golang_unit_tests:
   stage: test
+  <<: *goBeforeScript  # This is a reference to the anchor.
   script:
     - go test -short ./...
 
-race_detector:
+golang_race_detector:
   stage: test
+  <<: *goBeforeScript  # This is a reference to the anchor.
   script:
     - go test -race -short ./...
 
-#memory_sanitizer:
+#golang_memory_sanitizer:
 #  stage: test
+#  <<: *goBeforeScript  # This is a reference to the anchor.
 #  script:
 #    - go test -msan -short ./...
 
-#code_coverage:
+#golang_code_coverage:
 #  stage: test
+#  <<: *goBeforeScript  # This is a reference to the anchor.
 #  script:
 #    - for package in $(go list ./...); do
 #      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
@@ -46,8 +57,9 @@ race_detector:
 #    - tail -q -n +2 cover/*.cov >> cover/coverage.cov
 #    - go tool cover -func=cover/coverage.cov
 
-#code_coverage_report:
+#golang_code_coverage_report:
 #  stage: test
+#  <<: *goBeforeScript  # This is a reference to the anchor.
 #  script:
 #    - for package in $(go list ./...); do
 #      go test -covermode=count -coverprofile "cover/${package##*/}.cov" "$package" ;
@@ -58,20 +70,22 @@ race_detector:
 #  only:
 #    - master
 
-lint_code:
+golang_lint_code:
   stage: test
+  <<: *goBeforeScript  # This is a reference to the anchor.
   script:
     - golint -set_exit_status ./...
 
-compile:
+golang_compile:
   stage: compile
+  <<: *goBeforeScript  # This is a reference to the anchor.
   script:
     - go build -o bin/$CI_PROJECT_NAME -v .
   artifacts:
     paths:
       - $CI_PROJECT_DIR/bin/$CI_PROJECT_NAME
 
-build_image:
+docker_build_image:
   stage: build
   image: docker:19.03.1
   services:
