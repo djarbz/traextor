@@ -57,13 +57,11 @@ type acmeHTTPChallenges struct {
 
 // LoadFromFile will populate the ACME store from a JSON file
 func (a *Acme) LoadFromFile(file string) error {
-	internal.Log("Attempting to load: " + file)
 	// Check file is accessible
 	if !internal.CheckFileExists(file) {
 		return fmt.Errorf("acme file does not exist: %s", file)
 	}
 
-	internal.Log("File exists, opening...")
 	// Load file from disk
 	jsonFile, err := os.Open(file)
 	if err != nil {
@@ -75,7 +73,6 @@ func (a *Acme) LoadFromFile(file string) error {
 		}
 	}()
 
-	internal.Log("Opened: " + file)
 	return a.LoadJSON(jsonFile)
 }
 
@@ -94,6 +91,7 @@ func (a *Acme) LoadJSON(input io.Reader) error {
 
 // Generate will process every certificate in the store and output to file
 func (a *Acme) Generate(outDir string) error {
+	internal.Log(fmt.Sprintf("Generating certificates for %d domains", len(a.Certificates)))
 	for _, cert := range a.Certificates {
 		if err := cert.generate(outDir); err != nil {
 			return err

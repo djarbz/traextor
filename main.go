@@ -28,9 +28,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	// Create a new ACME store
-	ACME := acme.New()
-
 	// Check that the given acme.json file exists
 	for !internal.CheckFileExists(acmeFile) {
 		internal.Log(acmeFile + " does not exist!")
@@ -40,11 +37,13 @@ func main() {
 	internal.Log(acmeFile + " found!")
 	internal.Log("Your certificates will be exported to " + outputDir)
 
+	// Create a new ACME store
+	ACME := acme.New()
+
 	if err := ACME.LoadFromFile(acmeFile); err != nil {
 		internal.Log(fmt.Sprintf("Failed to load %s: %v", acmeFile, err))
 		os.Exit(1)
 	}
-	internal.Log(acmeFile + " loaded!")
 
 	if err := ACME.Generate(outputDir); err != nil {
 		internal.Log(fmt.Sprintf("Failed to generate certificates: %v", err))
