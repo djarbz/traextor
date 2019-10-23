@@ -22,12 +22,12 @@ stages:
   - compile
   - build
 
-before_script:
-  #  - mkdir -p /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds
-  #  - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/$CI_PROJECT_PATH
-  #  - ln -s /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds/$CI_PROJECT_NAMESPACE
-  - go mod tidy
-  - go get -u golang.org/x/lint/golint
+#before_script:
+#  #  - mkdir -p /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds
+#  #  - cp -r $CI_PROJECT_DIR /go/src/gitlab.com/$CI_PROJECT_PATH
+#  #  - ln -s /go/src/gitlab.com/$CI_PROJECT_NAMESPACE /go/src/_/builds/$CI_PROJECT_NAMESPACE
+#  - go mod tidy
+#  - go get -u golang.org/x/lint/golint
 
 golang_unit_tests:
   stage: test
