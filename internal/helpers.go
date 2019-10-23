@@ -7,8 +7,8 @@ import (
 )
 
 // Log prints a formatted log string
-func Log(string string) {
-	fmt.Println("[" + time.Now().Format(time.RFC850) + "] " + string)
+func Log(format string, vars ...interface{}) {
+	fmt.Printf("["+time.Now().Format(time.RFC850)+"] "+format, vars...)
 }
 
 // CheckFileExists will verify that the config file exists
@@ -16,7 +16,7 @@ func CheckFileExists(file string) bool {
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		return false
 	} else if err != nil {
-		fmt.Printf("Error checking file %s: %v", file, err)
+		Log("Error checking file %s: %v", file, err)
 		return false
 	} else {
 		return true
