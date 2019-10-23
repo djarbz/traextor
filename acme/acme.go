@@ -57,11 +57,13 @@ type acmeHTTPChallenges struct {
 
 // LoadFromFile will populate the ACME store from a JSON file
 func (a *Acme) LoadFromFile(file string) error {
+	internal.Log("Attempting to load: " + file)
 	// Check file is accessible
 	if !internal.CheckFileExists(file) {
 		return fmt.Errorf("acme file does not exist: %s", file)
 	}
 
+	internal.Log("File exists, opening...")
 	// Load file from disk
 	jsonFile, err := os.Open(file)
 	if err != nil {
