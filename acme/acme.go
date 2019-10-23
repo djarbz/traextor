@@ -85,6 +85,7 @@ func (a *Acme) LoadJSON(input io.Reader) error {
 	if err := json.Unmarshal(byteValue, a); err != nil {
 		return err
 	}
+	internal.Log("Loaded ACME store!")
 	return nil
 }
 
@@ -138,6 +139,8 @@ func (a *Acme) Watch(file string, outDir string) {
 		internal.Log(fmt.Sprintf("Failed to add %s to watcher: %v", file, err))
 		os.Exit(1)
 	}
+
+	internal.Log("Watching: " + file)
 
 	<-done
 }
