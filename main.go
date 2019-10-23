@@ -44,6 +44,7 @@ func main() {
 		internal.Log(fmt.Sprintf("Failed to load %s: %v", acmeFile, err))
 		os.Exit(1)
 	}
+	internal.Log(acmeFile + " loaded!")
 
 	if err := ACME.Generate(outputDir); err != nil {
 		internal.Log(fmt.Sprintf("Failed to generate certificates: %v", err))

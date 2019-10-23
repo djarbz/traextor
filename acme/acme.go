@@ -73,6 +73,7 @@ func (a *Acme) LoadFromFile(file string) error {
 		}
 	}()
 
+	internal.Log("Opened: " + file)
 	return a.LoadJSON(jsonFile)
 }
 
