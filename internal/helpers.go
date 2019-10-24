@@ -8,7 +8,7 @@ import (
 
 // Log prints a formatted log string
 func Log(format string, vars ...interface{}) {
-	fmt.Printf("["+time.Now().Format(time.RFC850)+"] "+format, vars...)
+	fmt.Printf("["+time.Now().Format(time.RFC850)+"] "+format+"\n", vars...)
 }
 
 // CheckFileExists will verify that the config file exists
@@ -24,8 +24,12 @@ func CheckFileExists(file string) bool {
 }
 
 // WriteFile will write bytes to a file
-func WriteFile(path string, content []byte) error {
-	f, err := os.Create(path)
+func WriteFile(path string, filename string, content []byte) error {
+	if err := CreateDir(path); err != nil {
+		return err
+	}
+
+	f, err := os.Create(fmt.Sprintf("%s%c%s", path, os.PathSeparator, filename))
 	if err != nil {
 		return err
 	}

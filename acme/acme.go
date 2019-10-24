@@ -1,7 +1,6 @@
 package acme
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -38,7 +37,7 @@ func New(version string) TraefikStore {
 // Traefik stores the raw JSON data and extracted data
 type Traefik struct {
 	CertStores map[string]*json.RawMessage
-	CertStore  map[string]Acme
+	CertStore  map[string]*Acme
 }
 
 // LoadFromFile will import the provided JSON datafile
@@ -71,21 +70,21 @@ func (t *Traefik) LoadJSON(input io.Reader) error {
 
 	// Init Maps
 	t.CertStores = make(map[string]*json.RawMessage)
-	t.CertStore = make(map[string]Acme)
+	t.CertStore = make(map[string]*Acme)
 
 	// Unmarshal JSON CertStores
-	if err := json.Unmarshal(byteValue, t.CertStores); err != nil {
+	if err := json.Unmarshal(byteValue, &t.CertStores); err != nil {
 		return err
 	}
 
 	// Unmarshal JSON Stores
 	for certStore, rawJSON := range t.CertStores {
-		if err := t.CertStore[certStore].LoadJSON(bytes.NewReader([]byte(*rawJSON))); err != nil {
+		internal.Log("Unmarshal certStore: %s", certStore)
+		acmeStore := new(Acme)
+		if err := json.Unmarshal([]byte(*rawJSON), acmeStore); err != nil {
 			return err
 		}
-		// if err := json.Unmarshal([]byte(*rawJSON), t.CertStore[certStore]); err != nil {
-		// 	return err
-		// }
+		t.CertStore[certStore] = acmeStore
 	}
 
 	internal.Log("Loaded ACME store!")
@@ -231,10 +230,10 @@ func (ac *acmeCertificate) getCertBytes() ([]byte, error) {
 }
 
 func (acd *acmeCertificateDomain) writeCerts(domain string, certificate []byte, key []byte, outDir string) error {
-	if err := internal.WriteFile(fmt.Sprintf("%s%c%s.pem", outDir, os.PathSeparator, domain), certificate); err != nil {
+	if err := internal.WriteFile(outDir, domain+".pem", certificate); err != nil {
 		return err
 	}
-	return internal.WriteFile(fmt.Sprintf("%s%c%s.key", outDir, os.PathSeparator, domain), key)
+	return internal.WriteFile(outDir, domain+".key", key)
 }
 
 func watch(file string, generateFunc func(string) error, outDir string) {
