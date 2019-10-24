@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -73,15 +74,18 @@ func (t *Traefik) LoadJSON(input io.Reader) error {
 	t.CertStore = make(map[string]Acme)
 
 	// Unmarshal JSON CertStores
-	if err := json.Unmarshal(byteValue, t.CertStores); err != nil {
+	if err := json.Unmarshal(byteValue, &t.CertStores); err != nil {
 		return err
 	}
 
 	// Unmarshal JSON Stores
 	for certStore, rawJSON := range t.CertStores {
-		if err := json.Unmarshal([]byte(*rawJSON), t.CertStore[certStore]); err != nil {
+		if err := t.CertStore[certStore].LoadJSON(bytes.NewReader([]byte(*rawJSON))); err != nil {
 			return err
 		}
+		// if err := json.Unmarshal([]byte(*rawJSON), t.CertStore[certStore]); err != nil {
+		// 	return err
+		// }
 	}
 
 	internal.Log("Loaded ACME store!")
