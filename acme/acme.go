@@ -13,6 +13,7 @@ import (
 	"gitlab.com/dj_arbz/traextor/internal"
 )
 
+// TraefikStore is the universal type of a Traefik interface
 type TraefikStore interface {
 	LoadFromFile(file string) error
 	LoadJSON(input io.Reader) error
@@ -104,6 +105,7 @@ func (t *Traefik) Watch(file string, outDir string) {
 	watch(file, t.Generate, outDir)
 }
 
+// Acme is the raw V1 JSON data store
 type Acme struct {
 	Account        acmeAccount        `json:"Account,omitempty"`
 	Certificates   []acmeCertificate  `json:"Certificates,omitempty"`
