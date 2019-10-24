@@ -74,7 +74,7 @@ func (t *Traefik) LoadJSON(input io.Reader) error {
 	t.CertStore = make(map[string]Acme)
 
 	// Unmarshal JSON CertStores
-	if err := json.Unmarshal(byteValue, &t.CertStores); err != nil {
+	if err := json.Unmarshal(byteValue, t.CertStores); err != nil {
 		return err
 	}
 
